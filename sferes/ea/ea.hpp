@@ -59,10 +59,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/mpl/joint_view.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/iostreams/stream_buffer.hpp>
-
-
+#include <boost/crc.hpp>
+#include <boost/thread/thread.hpp>
 #include <sferes/dbg/dbg.hpp>
 #include <sferes/misc.hpp>
 #include <sferes/stc.hpp>
@@ -402,6 +400,12 @@ namespace sferes {
         std::ofstream ofs(fname.c_str());
 	// write the size (in binary, no boost::serialization here)
 	ofs.write((char*)(&file_size), sizeof(size_t));
+
+	ofs.flush();
+	std::cout << "Pretending to only have written half of the file." << std::endl;
+	boost::this_thread::sleep( boost::posix_time::seconds(5) );
+	std::cout << "Continue writing the other half of the file." << std::endl;
+
 	// now write the content of the archive
 	ofs.write(ss.str().c_str(), ss.str().size());
 	
